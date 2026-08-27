@@ -1,152 +1,92 @@
 /*
-Bank account keeping the transaction amount as it is processed by customer.
-THe transaction amount of last customer is stores at top position after completion of all transaction, the manager pull the amount one by one and display the amount and find total-transaction-amount to print define following funstion:
-push(): to insert amount in
-pop(): to remove amount
-dosum(): find sum of all transaction amount
-
-AMOUNT INSERTED IN FOLLOWING ORDER:
+Bank account keeping the transaction amount as it is processed by customers .
+The transaction amount of last customer is stored at top position .
+After Completion of all transaction,the manager pull the amount one by one and
+display the amount and find total_transaction_amount to print .
+Define following function
+push() : to insert amount in
+pop() : to remove amount
+dosum() : find the sum of all transaction amount
+Amount inserted in following order
 1050,2090,3000,6000,5500,8900
 */
-
-#include <stdio.h>
-#include <stdlib.h>
-
-#define MAX 100
-
-int stack[MAX];
-int top = -1;
-
-
-void push(int amount)
-{
-    if (top == MAX - 1)
-    {
-        printf("Stack Overflow\n");
+#define stackSize 20
+#include<stdio.h>
+#include<stdlib.h>
+void push(int st[],int max,int* top,int item){
+    if(*top==max-1){
+        printf("Stack Overflow !");
         return;
     }
-    else
-    {
-        top = top + 1;
-        stack[top] = amount;
+    (*top)++;
+    st[*top]=item;
+}
+void printTransactionHistory(int st[],int top){
+    if(top==-1){
+        printf("No Previous Transaction ! \n");
+        return;
     }
-
-    printf("Transaction amount %d pushed into stack.\n", amount);
+    while(top>-1){
+        printf("Transaction %d amount : %d",top+1,st[top]);
+        printf("\n");
+        top--;
+    }
+    return;
 }
 
-int pop()
-{
-    int amount;
-
-    if (top == -1)
-    {
-        printf("Stack Underflow\n");
+int pop(int st[],int* top){
+    if(*top==-1){
+        printf("Underflow !\n");
         return -1;
     }
-    else
-    {
-        amount = stack[top];
-        top = top - 1;
-
-        printf("Transaction amount %d is removed from stack.\n", amount);
-
-        return amount;
-    }
+    int x=st[*top];
+    (*top)--;
+    return x;
 }
 
-
-void dosum()
-{
-    int sum = 0;
-    int amount;
-
-    if (top == -1)
-    {
-        printf("Stack is empty.\n");
-        return;
+int doSum(int st[],int top){
+    int total_transaction_amount=0;
+    while(top>-1){
+        total_transaction_amount+=st[top];
+        top--;
     }
-
-    printf("\nTransaction amounts pulled from stack:\n");
-
-    while (top != -1)
-    {
-        amount = pop();
-
-        if (amount != -1)
-        {
-            printf("Amount = %d\n", amount);
-            sum = sum + amount;
-        }
-    }
-
-    printf("\nTotal Transaction Amount = %d\n", sum);
+    return total_transaction_amount;
 }
 
-void display()
-{
-    int i;
-
-    if (top == -1)
-    {
-        printf("Stack is empty.\n");
-        return;
-    }
-
-    printf("\nCurrent Stack (Bottom -> Top):\n");
-
-    for (i = 0; i <= top; i++)
-    {
-        printf("%d ", stack[i]);
-    }
-
-    printf("\n");
-}
-
-int main()
-{
+int main(){
+    int tr_amount=0;
     int choice;
-    int amount;
+    int stack[stackSize];
+    int top=-1;
+    while(1){
+        printf("Enter Your choice :\n 1:Push \n 2:pop \n 3:sum of all transaction amount \n 4:Show Transaction History \n 5:exit \n");
+        scanf("%d",&choice);
+        switch(choice){
+            case 1 :
+                printf("Enter transaction amount to be pushed :");
+                scanf("%d",&tr_amount);
+                push(stack,10,&top,tr_amount);
+                break;
+            case 2 :
+                int x=pop(stack,&top);
+                if(x != -1){
+                    printf("Popped %d \n",x);
+                }
+                break;
+            case 3 :
+                printf("Total_transaction_amount : %d",doSum(stack,top));
+                printf("\n");
+                break;
+            case 4 :
+                printf("Printing Previous Transactions :\n");
+                printTransactionHistory(stack,top);
+                break;
+            case 5 :
+                printf("Exiting programme ...");
+                printf("\n");
+                exit(0);
 
-    while (1)
-    {
-        printf("\nEnter Your Choice:\n");
-        printf("1 : Push Transaction Amount\n");
-        printf("2 : Pop Transaction Amount\n");
-        printf("3 : Find Total Transaction Amount\n");
-        printf("4 : Display Stack\n");
-        printf("5 : Exit\n");
-
-        scanf("%d", &choice);
-
-        switch (choice)
-        {
-        case 1:
-            printf("Enter Transaction Amount: ");
-            scanf("%d", &amount);
-
-            push(amount);
-            break;
-
-        case 2:
-            pop();
-            break;
-
-        case 3:
-            dosum();
-            break;
-
-        case 4:
-            display();
-            break;
-
-        case 5:
-            printf("Program terminated.\n");
-            exit(0);
-
-        default:
-            printf("Invalid choice!\n");
         }
     }
-
     return 0;
 }
